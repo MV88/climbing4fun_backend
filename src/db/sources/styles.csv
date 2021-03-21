@@ -1,0 +1,7 @@
+"name","description"
+"onsight","Una ripetizione pulita effettuata al primo tentativo come primi di cordata (senza prove precedenti o informazioni sulla via)"
+"flash","Una ripetizione pulita effettuata al primo tentativo come primi di cordata (senza prove precedenti; ma dopo aver ricevuto informazioni o aver visto qualcuno arrampicarsi sulla via)"
+"redpoint","Una ripetizione pulita effettuata dopo tentativi precedenti come primi di cordata"
+"moulinette","Una ripetizione pulita effettuata come secondi di cordata"
+"tried","Una via su cui ci si è arrampicati senza averla chiusa nè da primi nè da secondi di cordata"
+"project","Una via a cui si sta lavorando o che ci si propone di affrontare"
