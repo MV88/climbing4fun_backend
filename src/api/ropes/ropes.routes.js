@@ -35,7 +35,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 const googleCloud = new Storage({
-  keyFilename: path.join(__dirname, "../../../climbing4fun-d9cc7f8ed347.json"),
+  credentials: process.env.GOOGLE_APPLICATION_CREDENTIALS,
   projectId: "climbing4fun",
 });
 const bucket = googleCloud.bucket("climbing4fun_prod");
