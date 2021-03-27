@@ -1,0 +1,26 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?"linkid":"830387",
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "test backend",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}\\src\\index.js",
+      "env": {
+        "POSTGRES_PASSWORD":"admin",
+        "POSTGRES_USER":"admin",
+        "POSTGRES_DB":"climbing4fun",
+        "POSTGRES_DB_TEST":"climbing4fun_test",
+        "JWT_SECRET":"3b68eeb83bddd2f524e715623cd2b9192345c68e2b170487fc0533d1c9db0b659317a17ac24e2a730b2689d0e1636f27cdce53bbba6",
+        "AUTH_PORT":"3443",
+        "PORT":"5050"
+      }
+    }
+  ]
+}
