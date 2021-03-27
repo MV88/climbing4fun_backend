@@ -1,14 +1,7 @@
-const path = require('path');
-const multer = require('multer');
+const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join('./static'));
-  },
-  filename: (req, file, cb) => {
-    cb(null, (`${new Date().getTime()} ${file.originalname}`).replace(":", "-"));
-  },
-});
+const storage = multer.memoryStorage();
+
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
     // accept a file
@@ -25,4 +18,6 @@ const upload = multer({
   fileFilter,
 });
 
-module.exports = upload;
+module.exports = {
+  upload,
+};

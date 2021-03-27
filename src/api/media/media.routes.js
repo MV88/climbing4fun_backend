@@ -1,6 +1,6 @@
 const express = require("express");
 const { checkAuth } = require('../auth/auth.utils');
-const upload = require('../../utils/upload');
+const {upload} = require('../../utils/upload');
 const Media = require('./media.model');
 
 const router = express.Router();

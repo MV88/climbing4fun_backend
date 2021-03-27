@@ -2,7 +2,7 @@
 const express = require("express");
 
 const { checkAuth } = require('../auth/auth.utils');
-const upload = require('../../utils/upload');
+const {upload} = require('../../utils/upload');
 const Gallery = require('./galleries.model');
 
 const router = express.Router();
