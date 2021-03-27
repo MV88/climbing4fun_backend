@@ -5,7 +5,7 @@ const { Storage } = require("@google-cloud/storage");
 const { checkAuth } = require("../auth/auth.utils");
 const { upload } = require("../../utils/upload");
 const Rope = require("./ropes.model");
-const path = require("path");
+require("dotenv").config();
 
 const router = express.Router();
 
@@ -35,7 +35,10 @@ router.get("/:id", async (req, res, next) => {
 });
 
 const googleCloud = new Storage({
-  credentials: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  credentials: {
+    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+  },
   projectId: "climbing4fun",
 });
 const bucket = googleCloud.bucket("climbing4fun_prod");
