@@ -37,7 +37,10 @@ router.get("/:id", async (req, res, next) => {
 const googleCloud = new Storage({
   credentials: {
     client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+    private_key: JSON.parse(process.env.GOOGLE_CLOUD_PRIVATE_KEY).replace(
+      /\\n/g,
+      "\n"
+    ),
   },
   projectId: "climbing4fun",
 });
