@@ -18,6 +18,17 @@ const upload = multer({
   fileFilter,
 });
 
+const providers = {};
+
+const setProviders = (name, impl) => {
+  providers[name] = impl;
+};
+const getProviders = (name = "googleCloud") => {
+  return providers[name].impl;
+};
+
 module.exports = {
   upload,
+  setProviders,
+  getProviders,
 };

@@ -14,6 +14,7 @@ router.get("/", async (req, res, next) => {
     const ropes = await Rope.query()
       .withGraphFetched("hasThumbnail(thumbnail)")
       .select("*")
+      .orderBy("id")
       .modifiers({
         thumbnail(builder) {
           builder.select("url");

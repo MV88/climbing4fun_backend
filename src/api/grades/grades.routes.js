@@ -1,12 +1,16 @@
 const express = require("express");
-const Grade = require('./grades.model');
+const Grade = require("./grades.model");
 
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const grades = await Grade.query();
-    res.status(200).json({ length: grades.length, result: grades, message: "All grades retrieved" });
+    const grades = await Grade.query().orderBy("id");
+    res.status(200).json({
+      length: grades.length,
+      result: grades,
+      message: "All grades retrieved",
+    });
   } catch (e) {
     next(e);
   }

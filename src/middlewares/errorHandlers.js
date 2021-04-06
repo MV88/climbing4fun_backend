@@ -4,10 +4,10 @@ const errorTypes = {
 };
 
 const errorMessages = {
-  UniqueViolationError: 'Already exists.',
+  UniqueViolationError: "Already exists.",
 };
 
-function isAlreadyInUse ({ message, columns, name }) {
+function isAlreadyInUse({ message, columns, name }) {
   const inUseIndex = message.indexOf(" already in use");
   if (inUseIndex !== -1) {
     const fieldInUse = message.substr(0, inUseIndex);
@@ -18,10 +18,9 @@ function isAlreadyInUse ({ message, columns, name }) {
   }
   return undefined;
 }
-const errorHandler = (error, req, res, next) => {
-  const statusCode = res.statusCode === 200
-    ? (errorTypes[error.name] || 500)
-    : res.statusCode;
+const errorHandler = (error, req, res) => {
+  const statusCode =
+    res.statusCode === 200 ? errorTypes[error.name] || 500 : res.statusCode;
   res.status(statusCode);
   const alreadyUsed = isAlreadyInUse(error);
   res.json({

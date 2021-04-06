@@ -1,20 +1,18 @@
-const { Model } = require('objection');
-const tableNames = require('../../constants/tableNames');
+const { Model } = require("objection");
+const tableNames = require("../../constants/tableNames");
 
 class Gallery extends Model {
-  static get tableName () {
+  static get tableName() {
     return tableNames.gallery;
   }
 
-  static get jsonschema () {
+  static get jsonschema() {
     return {
       $schema: "http://json-schema.org/draft-07/schema",
       type: "object",
       title: "The Gallery schema",
       description: "The Gallery.",
-      required: [
-        "title",
-      ],
+      required: ["title"],
       properties: {
         id: {
           $id: "#/properties/id",
@@ -58,9 +56,9 @@ class Gallery extends Model {
     };
   }
 
-  static get relationMappings () {
-    const User = require('../users/users.model');
-    const Media = require('../media/media.model');
+  static get relationMappings() {
+    const User = require("../users/users.model");
+    const Media = require("../media/media.model");
 
     return {
       galleryMedia: {
