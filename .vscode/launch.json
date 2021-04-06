@@ -5,7 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "type": "pwa-node",
+      "resolveSourceMapLocations": [
+          "${workspaceFolder}/**",
+          "!**/node_modules/**" // this lines prevent reading source maps from node_modules
+      ],
       "request": "launch",
       "name": "test backend",
       "skipFiles": [
