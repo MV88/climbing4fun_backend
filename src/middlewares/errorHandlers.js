@@ -23,6 +23,7 @@ const errorHandler = (error, req, res) => {
     res.statusCode === 200 ? errorTypes[error.name] || 500 : res.statusCode;
   res.status(statusCode);
   const alreadyUsed = isAlreadyInUse(error);
+  console.log("error", error);
   res.json({
     status: statusCode,
     message: error.detail || error.message,
