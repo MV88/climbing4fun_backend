@@ -48,5 +48,5 @@ exports.seed = async (knex) => {
   await knex(tableNames.rope).insert(ropes, "*");
   await knex(tableNames.gallery).insert(galleries, "*");
   await knex(tableNames.relGalleriesMedia).insert(relGalleriesMedia, "*");
-  await knex(tableNames.attempts).insert(attempts, "*");
+  await knex(tableNames.attempt).insert(attempts, "*");
 };

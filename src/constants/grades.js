@@ -3,12 +3,12 @@ const path = require("path");
 const Papa = require("papaparse");
 
 const csvData = fs.readFileSync(
-  path.join(__dirname, "..", "..", "src", "db", "sources", "attempts.csv"),
+  path.join(__dirname, "..", "..", "src", "db", "sources", "grades.csv"),
   "utf8"
 );
 
-const attempts = Papa.parse(csvData, {
+const grades = Papa.parse(csvData, {
   header: true,
 });
 
-module.exports = attempts.data;
+module.exports = grades.data;
