@@ -24,7 +24,7 @@ const setProviders = (name, impl) => {
   providers[name] = impl;
 };
 const getProviders = (name = "googleCloud") => {
-  return providers[name].impl;
+  return providers[name];
 };
 
 module.exports = {

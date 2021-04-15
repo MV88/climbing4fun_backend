@@ -50,42 +50,47 @@ router.post(
   "/",
   checkAuth,
   upload.single("thumbnail"),
-  /* upload.array("images"), */ async (req, res, next) => {
+  async (req, res, next) => {
     try {
       const gallery = req.body;
-      const url = `/${req.file.filename}`;
+      const file = req.file;
+      const bucket = getProviders();
+      const blob = bucket.file(`${new Date().getTime()}_${file.originalname}`);
+      const blobStream = blob.createWriteStream();
 
-      const thumbnail = {
-        name: `${gallery.title}`,
-        url,
-        mimeType: req.file.mimetype,
-        description: req.file.filename,
-      };
-      /*
-    const media = req.files.map(media => ({
-      name: `${media.filename}`,
-      url,
-      mimeType: media.mimetype,
-      description: media.filename,
-    }));
-    const mediaCreated = await Gallery.query().insert(media);
-    */
-
-      const galleryCreated = await Gallery.query().insertGraph({
-        ...gallery,
-        userId: req.userData.id,
-        hasThumbnail: {
-          ...thumbnail,
-        },
-        /* galleryMedia: [mediaCreated.map(({ id }) => ({
-        mediaId: id,
-      })),
-      ], */
+      blobStream.on("error", (err) => {
+        next(err);
       });
-      galleryCreated.thumbnail = url;
-      res.status(200).json({
-        result: { gallery: galleryCreated },
-        message: "Gallery inserted correctly",
+
+      blobStream.end(file.buffer);
+
+      blobStream.on("finish", async () => {
+        // The public URL can be used to directly access the file via HTTP.
+        const url = format(
+          `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+        );
+        const media = {
+          name: `${gallery.title}`,
+          url,
+          mimeType: file.mimetype,
+          description: file.originalname,
+        };
+
+        // const mediaCreated = await Media.query().insert(media);
+
+        const galleryCreated = await Gallery.query().insertGraph({
+          ...gallery,
+          userId: req.userData.id,
+          hasThumbnail: {
+            ...media,
+          },
+          galleryMedia: [],
+        });
+        galleryCreated.thumbnail = url;
+        res.status(200).json({
+          result: { gallery: galleryCreated },
+          message: "Gallery inserted correctly",
+        });
       });
     } catch (e) {
       next(e);
@@ -106,6 +111,7 @@ router.delete("/:id", checkAuth, async (req, res, next) => {
 });
 router.delete("/:galleryId/:mediaId", checkAuth, async (req, res, next) => {
   try {
+    // TODO evaluate to move this to the media routes
     const { mediaId } = req.params;
     // TODO use soft delete
     const numDeleted = await Media.query().deleteById(mediaId);

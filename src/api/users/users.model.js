@@ -1,21 +1,18 @@
-const { Model } = require('objection');
-const tableNames = require('../../constants/tableNames');
+const { Model } = require("objection");
+const tableNames = require("../../constants/tableNames");
 
 class User extends Model {
-  static get tableName () {
+  static get tableName() {
     return tableNames.user;
   }
 
-  static get jsonschema () {
+  static get jsonschema() {
     return {
       $schema: "http://json-schema.org/draft-07/schema",
       type: "object",
       title: "The User schema",
       description: "The user.",
-      required: [
-        "email",
-        "password",
-      ],
+      required: ["email", "password"],
       properties: {
         id: {
           $id: "#/properties/id",
@@ -26,25 +23,19 @@ class User extends Model {
           $id: "#/properties/email",
           type: "string",
           title: "The email of the user, must be unique",
-          examples: [
-            "chronosoutoftime@gmail.com",
-          ],
+          examples: ["chronosoutoftime@gmail.com"],
         },
         username: {
           $id: "#/properties/username",
           type: "string",
           title: "The username of the user",
-          examples: [
-            "Chronos",
-          ],
+          examples: ["Chronos"],
         },
         name: {
           $id: "#/properties/name",
           type: "string",
           title: "The name of the user",
-          examples: [
-            "Matteo",
-          ],
+          examples: ["Matteo"],
         },
         refreshToken: {
           $id: "#/properties/refreshToken",
@@ -60,17 +51,13 @@ class User extends Model {
           $id: "#/properties/created_at",
           type: "string",
           title: "The date of creation of the user",
-          examples: [
-            "2021-01-07T22:48:30.656Z",
-          ],
+          examples: ["2021-01-07T22:48:30.656Z"],
         },
         updated_at: {
           $id: "#/properties/updated_at",
           type: "string",
           title: "The date of the update of the user",
-          examples: [
-            "2021-01-07T22:48:30.656Z",
-          ],
+          examples: ["2021-01-07T22:48:30.656Z"],
         },
       },
       additionalProperties: false,

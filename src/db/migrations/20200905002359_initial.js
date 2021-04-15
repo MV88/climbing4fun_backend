@@ -3,7 +3,12 @@ const Knex = require("knex");
 
 const tableNames = require("../../../src/constants/tableNames");
 
-const { addDefaultColumns, email, references, url } = require('../../utils/tableUtils');
+const {
+  addDefaultColumns,
+  email,
+  references,
+  url,
+} = require("../../utils/tableUtils");
 
 /**
  * @param {Knex} knex
@@ -72,7 +77,7 @@ exports.up = async (knex) => {
     table.string("color").notNullable();
     table.float("length").notNullable();
     table.float("thickness").notNullable();
-    table.string("owner").notNullable();
+    table.string("ownerName").notNullable();
     table.datetime("purchaseDate");
     table.string("shopLink");
     references(table, tableNames.user, false, "owner");
@@ -81,9 +86,8 @@ exports.up = async (knex) => {
   });
   await knex.schema.createTable(tableNames.attempt, (table) => {
     table.increments().notNullable();
-    url(table, "linkWebsite");
     table.datetime("climbingDate").notNullable();
-    table.integer("numOfTries").notNullable();
+    table.integer("tries").notNullable();
     references(table, tableNames.user, true, "climber");
     references(table, "style");
     references(table, "rope");
@@ -105,6 +109,6 @@ exports.down = async (knex) => {
       tableNames.grade,
       tableNames.style,
       // eslint-disable-next-line comma-dangle
-    ].map(tableName => knex.schema.dropTableIfExists(tableName))
+    ].map((tableName) => knex.schema.dropTableIfExists(tableName))
   );
 };

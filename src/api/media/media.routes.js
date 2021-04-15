@@ -1,7 +1,7 @@
 const express = require("express");
-const { checkAuth } = require('../auth/auth.utils');
-const {upload} = require('../../utils/upload');
-const Media = require('./media.model');
+const { checkAuth } = require("../auth/auth.utils");
+const { upload } = require("../../utils/upload");
+const Media = require("./media.model");
 
 const router = express.Router();
 
@@ -22,17 +22,24 @@ router.get("/:mediaId", async (req, res, next) => {
     next(e);
   }
 });
-router.post("/", checkAuth, upload.single("thumbnail"), async (req, res, next) => {
-  try {
-    let media = req.body;
-    media = { ...media, url: `/${req.file.filename}` };
+router.post(
+  "/",
+  checkAuth,
+  upload.single("thumbnail"),
+  async (req, res, next) => {
+    try {
+      let media = req.body;
+      media = { ...media, url: `/${req.file.filename}` };
 
-    const mediaCreated = await Media.query().insert(media);
-    res.status(200).json({ result: mediaCreated, message: "Media inserted correctly" });
-  } catch (e) {
-    next(e);
+      const mediaCreated = await Media.query().insert(media);
+      res
+        .status(200)
+        .json({ result: mediaCreated, message: "Media inserted correctly" });
+    } catch (e) {
+      next(e);
+    }
   }
-});
+);
 /*
 router.patch("/:ropeId", checkAuth, ropesPatchById);
 router.delete("/:ropeId", checkAuth, ropesDeleteById);

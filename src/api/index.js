@@ -7,8 +7,9 @@ const ropes = require("./ropes/ropes.routes");
 const media = require("./media/media.routes");
 const climbingRoute = require("./climbingRoutes/climbingRoute.routes");
 const grades = require("./grades/grades.routes");
+const attempts = require("./attempts/attempts.routes");
 const galleries = require("./galleries/galleries.routes");
-const { setProviders } = require("../utils/upload");
+const { setProviders, getProviders } = require("../utils/upload");
 const { Storage } = require("@google-cloud/storage");
 const googleCloud = new Storage({
   credentials: {
@@ -20,9 +21,15 @@ const googleCloud = new Storage({
   },
   projectId: "climbing4fun",
 });
-setProviders("googleCloud", googleCloud.bucket("climbing4fun_prod"));
 
 const router = express.Router();
+router.use("/", async (req, res, next) => {
+  if (!getProviders()) {
+    setProviders("googleCloud", googleCloud.bucket("climbing4fun_prod"));
+  }
+
+  next();
+});
 router.get("/", (req, res) => {
   res.json({ message: API });
 });
@@ -34,5 +41,6 @@ router.use("/auth", auth);
 router.use("/climbing-routes", climbingRoute);
 router.use("/grades", grades);
 router.use("/galleries", galleries);
+router.use("/attempts", attempts);
 
 module.exports = router;

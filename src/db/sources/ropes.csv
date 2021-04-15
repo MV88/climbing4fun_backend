@@ -1,4 +1,4 @@
-"ownerId","thumbnailId","brand","color","purchaseDate","length","thickness","owner","shopLink"
+"ownerId","thumbnailId","brand","color","purchaseDate","length","thickness","ownerName","shopLink"
 1,1,"Beal","Orange","2020/06/20","80","9.8","",""
 1,1,"Beal","red","2020/06/20","70","9.8","",""
 1,1,"Beal","red","2020/06/20","70","9.8","",""

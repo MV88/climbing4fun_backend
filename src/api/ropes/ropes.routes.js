@@ -1,11 +1,9 @@
 const express = require("express");
 const { format } = require("util");
-const { Storage } = require("@google-cloud/storage");
 
 const { checkAuth } = require("../auth/auth.utils");
-const { upload } = require("../../utils/upload");
+const { upload, getProviders } = require("../../utils/upload");
 const Rope = require("./ropes.model");
-require("dotenv").config();
 
 const router = express.Router();
 
@@ -20,7 +18,12 @@ router.get("/", async (req, res, next) => {
           builder.select("url");
         },
       });
-    res.status(200).json({ length: ropes.length, result: ropes });
+    res.status(200).json({
+      length: ropes.length,
+      result: ropes.map((rope) => {
+        return { ...rope, owner: rope.ownerId ? "yes" : "no" };
+      }),
+    });
   } catch (e) {
     next(e);
   }
@@ -29,23 +32,13 @@ router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     const rope = await Rope.query().where({ id });
-    res.status(200).json({ result: rope });
+    res
+      .status(200)
+      .json({ result: { ...rope, owner: rope.ownerId ? "yes" : "no" } });
   } catch (e) {
     next(e);
   }
 });
-
-const googleCloud = new Storage({
-  credentials: {
-    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-    private_key: JSON.parse(process.env.GOOGLE_CLOUD_PRIVATE_KEY).replace(
-      /\\n/g,
-      "\n"
-    ),
-  },
-  projectId: "climbing4fun",
-});
-const bucket = googleCloud.bucket("climbing4fun_prod");
 
 router.post(
   "/",
@@ -54,7 +47,7 @@ router.post(
   async (req, res, next) => {
     try {
       const rope = req.body;
-
+      const bucket = getProviders();
       // Create a new blob in the bucket and upload the file data.
       const blob = bucket.file(
         `${new Date().getTime()}_${req.file.originalname}`
@@ -84,15 +77,16 @@ router.post(
 
         if (rope.owner === "yes") {
           rope.ownerId = req.userData.id;
-          rope.owner = "";
-        } else {
-          rope.owner = rope.ownerName;
+          rope.ownerName = "";
+          delete rope.owner;
         }
-        delete rope.ownerName;
         const ropeCreated = await Rope.query().insertGraph({
           ...rope,
           hasThumbnail: media,
         });
+        if (rope.owner === "yes") {
+          rope.owner = "yes";
+        }
         ropeCreated.url = url;
         res.status(200).json({
           result: { rope: ropeCreated },
@@ -117,17 +111,26 @@ router.delete("/:id", checkAuth, async (req, res, next) => {
     next(e);
   }
 });
-router.patch("/:id", checkAuth, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const rope = req.body;
-    await Rope.query().findById(id).patch(rope);
-    const ropePatched = await Rope.query().where({ id }).first();
-    res
-      .status(200)
-      .json({ result: ropePatched, message: "rope patched correctly" });
-  } catch (e) {
-    next(e);
+router.patch(
+  "/:id",
+  checkAuth,
+  upload.single("thumbnail"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      let rope = req.body;
+      delete rope.owner;
+      rope = Object.keys(rope).reduce((obj, key) => {
+        return rope[key] ? { ...obj, [key]: rope[key] } : obj;
+      }, {});
+      await Rope.query().findById(id).patch(rope);
+      const ropePatched = await Rope.query().where({ id }).first();
+      res
+        .status(200)
+        .json({ result: ropePatched, message: "rope patched correctly" });
+    } catch (e) {
+      next(e);
+    }
   }
-});
+);
 module.exports = router;

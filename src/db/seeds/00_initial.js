@@ -10,12 +10,13 @@ const ropes = require("../../constants/ropes");
 const media = require("../../constants/media");
 const relGalleriesMedia = require("../../constants/relGalleriesMedia");
 const galleries = require("../../constants/galleries");
+const attempts = require("../../constants/attempts");
 
 /**
  * @param {Knex} knex
  */
 exports.seed = async (knex) => {
-  await Promise.all(Object.keys(tableNames).map(name => knex(name).del()));
+  await Promise.all(Object.keys(tableNames).map((name) => knex(name).del()));
 
   const password = crypto.randomBytes(15).toString("hex");
 
@@ -36,7 +37,7 @@ exports.seed = async (knex) => {
       {
         password,
       },
-      createdUser,
+      createdUser
     );
   }
 
@@ -47,4 +48,5 @@ exports.seed = async (knex) => {
   await knex(tableNames.rope).insert(ropes, "*");
   await knex(tableNames.gallery).insert(galleries, "*");
   await knex(tableNames.relGalleriesMedia).insert(relGalleriesMedia, "*");
+  await knex(tableNames.attempts).insert(attempts, "*");
 };

@@ -1,21 +1,18 @@
-const { Model } = require('objection');
-const tableNames = require('../../constants/tableNames');
+const { Model } = require("objection");
+const tableNames = require("../../constants/tableNames");
 
 class ClimbingRoute extends Model {
-  static get tableName () {
+  static get tableName() {
     return tableNames.route;
   }
 
-  static get jsonschema () {
+  static get jsonschema() {
     return {
       $schema: "http://json-schema.org/draft-07/schema",
       type: "object",
       title: "The ClimbingRoute schema",
       description: "The ClimbingRoute.",
-      required: [
-        "name",
-        "city",
-      ],
+      required: ["name", "city"],
       properties: {
         id: {
           $id: "#/properties/id",
@@ -46,25 +43,21 @@ class ClimbingRoute extends Model {
           $id: "#/properties/created_at",
           type: "string",
           title: "The date of creation of the climbing route",
-          examples: [
-            "2021-01-07T22:48:30.656Z",
-          ],
+          examples: ["2021-01-07T22:48:30.656Z"],
         },
         updated_at: {
           $id: "#/properties/updated_at",
           type: "string",
           title: "The date of the update of the climbing route",
-          examples: [
-            "2021-01-07T22:48:30.656Z",
-          ],
+          examples: ["2021-01-07T22:48:30.656Z"],
         },
       },
       additionalProperties: false,
     };
   }
 
-  static get relationMappings () {
-    const Grade = require('../grades/grades.model');
+  static get relationMappings() {
+    const Grade = require("../grades/grades.model");
 
     return {
       hasGrade: {
