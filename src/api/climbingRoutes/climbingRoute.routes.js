@@ -10,7 +10,7 @@ router.get("/", async (req, res, next) => {
     const routes = await ClimbingRoute.query()
       .withGraphFetched("hasGrade(french)")
       .select("id", "name", "sector", "city", "link")
-      .orderBy("id")
+      .orderBy("id", "sector")
       .modifiers({
         french(builder) {
           builder.select("french");

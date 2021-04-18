@@ -12,17 +12,17 @@ router.get("/", async (req, res, next) => {
       .withGraphFetched("hasStyle(style)")
       .withGraphFetched("hasRoute(route)")
       .withGraphFetched("hasRoute.hasGrade(grade)")
-      .orderBy("id")
       .select("id", "tries", "climbingDate")
+      .orderBy([{ column: "climbingDate", order: "desc" }, "id"])
       .modifiers({
         rope(builder) {
-          builder.select("brand", "length", "thickness");
+          builder.select("id", "brand", "length", "thickness");
         },
         style(builder) {
-          builder.select("name");
+          builder.select("id", "name");
         },
         route(builder) {
-          builder.select("name", "sector");
+          builder.select("id", "name", "sector");
         },
         grade(builder) {
           builder.select("french");

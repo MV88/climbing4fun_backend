@@ -26,9 +26,15 @@ exports.seed = async (knex) => {
     email: "teo.rubber@gmail.com",
     password: await bcrypt.hash(password, 12),
   };
+  const user2 = {
+    name: "Matteo2",
+    username: "ChronosOutOfTime2",
+    email: "teo.2rubber@gmail.com",
+    password: await bcrypt.hash(password, 12),
+  };
 
   const [createdUser] = await knex(tableNames.user)
-    .insert([user])
+    .insert([user, user2])
     .returning("*");
 
   if (process.env.NODE_ENV !== "test") {
