@@ -47,30 +47,55 @@ router.post(
   async (req, res, next) => {
     try {
       const rope = req.body;
-      const bucket = getProviders();
-      // Create a new blob in the bucket and upload the file data.
-      const blob = bucket.file(
-        `${new Date().getTime()}_${req.file.originalname}`
-      );
-      const blobStream = blob.createWriteStream();
-
-      blobStream.on("error", (err) => {
-        next(err);
-      });
-
-      blobStream.end(req.file.buffer);
-
-      blobStream.on("finish", async () => {
-        // The public URL can be used to directly access the file via HTTP.
-        const url = format(
-          `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+      if (req.file) {
+        const bucket = getProviders();
+        // Create a new blob in the bucket and upload the file data.
+        const blob = bucket.file(
+          `${new Date().getTime()}_${req.file.originalname}`
         );
-        const media = {
-          name: `${rope.brand} ${rope.color}`,
-          url,
-          mimeType: req.file.mimetype,
-          description: req.file.originalname,
-        };
+        const blobStream = blob.createWriteStream();
+
+        blobStream.on("error", (err) => {
+          next(err);
+        });
+
+        blobStream.end(req.file.buffer);
+
+        blobStream.on("finish", async () => {
+          // The public URL can be used to directly access the file via HTTP.
+          const url = format(
+            `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+          );
+          const media = {
+            name: `${rope.brand} ${rope.color}`,
+            url,
+            mimeType: req.file.mimetype,
+            description: req.file.originalname,
+          };
+          if (rope.purchaseDate === "") {
+            delete rope.purchaseDate;
+          }
+
+          if (rope.owner === "yes") {
+            rope.ownerId = req.userData.id;
+            rope.ownerName = "";
+            delete rope.owner;
+          }
+          const ropeCreated = await Rope.query().insertGraph({
+            ...rope,
+            hasThumbnail: media,
+          });
+          if (rope.owner === "yes") {
+            rope.owner = "yes";
+          }
+          ropeCreated.url = url;
+          res.status(200).json({
+            result: { rope: ropeCreated },
+            message: "Rope inserted correctly",
+          });
+          console.log("publicUrl", url);
+        });
+      } else {
         if (rope.purchaseDate === "") {
           delete rope.purchaseDate;
         }
@@ -80,20 +105,16 @@ router.post(
           rope.ownerName = "";
           delete rope.owner;
         }
-        const ropeCreated = await Rope.query().insertGraph({
-          ...rope,
-          hasThumbnail: media,
-        });
+        const ropeCreated = await Rope.query().insertGraph(rope);
         if (rope.owner === "yes") {
           rope.owner = "yes";
         }
-        ropeCreated.url = url;
+        ropeCreated.url = "url";
         res.status(200).json({
           result: { rope: ropeCreated },
           message: "Rope inserted correctly",
         });
-        console.log("publicUrl", url);
-      });
+      }
     } catch (e) {
       next(e);
     }
